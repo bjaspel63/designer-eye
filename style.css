@@ -1,0 +1,95 @@
+/* Mobile-friendly responsive images */
+img {
+  border: 4px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 100%;    /* no overflow */
+  height: auto;
+  /* Responsive max-width for different screen sizes (optional fallback) */
+  max-width: 320px;
+}
+
+@media (min-width: 640px) {
+  img {
+    max-width: 380px;
+  }
+}
+
+@media (min-width: 768px) {
+  img {
+    max-width: 450px;
+  }
+}
+
+img:hover {
+  transform: scale(1.07);
+  border-color: #6366f1; /* Indigo */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Feedback fade-in */
+#feedback {
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Button styling */
+button {
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  padding: 12px 24px;
+  min-width: 140px;
+  font-size: 1rem;
+  border-radius: 9999px; /* full rounded */
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.5s forwards;
+}
+
+/* Responsive container for images */
+#images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem; /* 24px */
+}
+
+/* Portrait orientation tweaks */
+@media (orientation: portrait) {
+  #images {
+    flex-direction: column;
+    align-items: center;
+  }
+  img {
+    max-width: 90vw;
+  }
+}
+
+/* Input field bigger on mobile */
+#username-input {
+  font-size: 1.125rem; /* 18px */
+  padding: 0.75rem 1rem; /* 12px 16px */
+}
+
+

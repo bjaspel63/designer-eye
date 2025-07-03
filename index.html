@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎯 Designer Eye Challenge</title>
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- html2canvas -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  
+  <!-- confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #fceabb, #f8b500);
+      min-height: 100vh;
+      display: flex;
+	  align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #welcome-screen {
+    flex-grow: 0;                 /* Remove unnecessary stretch */
+	min-height: 600px;            /* Smaller height */
+	max-width: 400px;
+	
+	background: white;
+	border-radius: 1rem;
+	box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+	padding: 1.25rem;             /* Reduce inner spacing */
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	animation: fadeIn 0.6s ease forwards;
+}
+
+    }
+    #welcome-screen h1 {
+      font-weight: 800;
+      font-size: 2.8rem;
+      color: #ca8a04; /* yellow-600 */
+      user-select: none;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    #welcome-username-input {
+      width: 100%;
+      padding: 0.75rem 1.25rem;
+      border: 2px solid #fbbf24; /* yellow-400 */
+      border-radius: 9999px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      outline-offset: 2px;
+      margin-bottom: 2rem;
+      transition: box-shadow 0.3s ease;
+    }
+    #welcome-username-input:focus {
+      box-shadow: 0 0 8px #f59e0b; /* yellow-500 */
+      border-color: #f59e0b;
+    }
+    #start-btn {
+      width: 100%;
+      background-color: #f59e0b; /* yellow-500 */
+      color: white;
+      font-weight: 700;
+      font-size: 1.25rem;
+      padding: 0.75rem 0;
+      border-radius: 9999px;
+      box-shadow: 0 6px 12px rgba(245, 158, 11, 0.5);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    #start-btn:hover {
+      background-color: #d97706; /* yellow-600 */
+    }
+    footer {
+      background-color: #b45309; /* yellow-700 */
+      color: #fef3c7; /* yellow-100 */
+      text-align: center;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      user-select: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Welcome Screen -->
+  <div id="welcome-screen" class="max-w-md mx-auto bg-white rounded-xl shadow-md p-6 flex flex-col min-h-[300px] justify-between">
+  <div>
+    <h1 class="text-4xl font-bold mb-4 text-purple-800"><center>🎯<br> Designer Eye Challenge<center></h1><br>
+    <input id="welcome-username-input" type="text" placeholder="👤 Enter your name"
+           class="w-full px-4 py-3 rounded-full border-2 border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 mb-6" />
+    <button id="start-btn"
+            class="bg-yellow-400 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-yellow-500 transition">
+      Start
+    </button>
+  </div>
+  <br><br>
+  <footer class="mt-8 text-sm text-yellow-100 bg-yellow-700 rounded-md p-3 select-none">
+    © 2025 Designer Eye Challenge. <br> Personal Project by Jaspel C. Bosales.
+  </footer>
+</div>
+
+
+  <!-- Main Game UI (hidden initially) -->
+  <div id="game-wrapper" class="hidden text-center p-6 text-gray-800 max-w-5xl mx-auto bg-white rounded-xl shadow-md">
+    <h1 id="main-title" class="text-4xl font-bold mb-2 text-purple-800">🎯 Designer Eye Challenge</h1>
+    <p id="main-instruction" class="text-lg mb-6 text-gray-700">Select the design that looks most correct</p>
+
+    <!-- Score Display -->
+    <div id="score" class="text-lg font-semibold text-gray-800 mb-4">Score: 0</div>
+
+    <button id="toggle-music"
+            onclick="toggleMusic()"
+            class="fixed top-4 right-4 text-sm bg-white px-3 py-1 rounded shadow hover:bg-blue-100 z-50">
+      🔈 Mute
+    </button>
+
+    <button id="toggle-lang"
+            onclick="toggleLanguage()"
+            class="fixed top-4 right-28 text-sm bg-white px-3 py-1 rounded shadow hover:bg-yellow-100 z-50">
+      🌐 ภาษาไทย
+    </button>
+
+    <div id="game-container">
+      <div id="level-title" class="text-xl font-semibold mb-6 text-indigo-700"></div>
+      <div class="flex justify-center gap-8 flex-wrap mb-6" id="images"></div>
+      <div id="feedback" class="text-lg font-bold mb-6"></div>
+      <div id="explanation" class="text-lg text-gray-700 mb-6"></div>
+      <div id="timer" class="text-lg font-semibold text-red-600 mb-4"></div>
+      <div class="w-full bg-gray-300 h-4 rounded-full overflow-hidden">
+        <div id="progress" class="bg-green-500 h-4 rounded-full transition-all duration-300 ease-in-out" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="script.js"></script>
+
+  <script>
+    // Prevent 'a' and 'b' keys from triggering game answers while typing username on welcome screen
+    const welcomeInput = document.getElementById('welcome-username-input');
+    let username = '';
+
+    // Set username function (can be used in your main script as well)
+    function setUsername(name) {
+      username = name.trim();
+    }
+
+    // Start button click handler
+    document.getElementById('start-btn').addEventListener('click', () => {
+      const name = welcomeInput.value.trim();
+      if (name === '') {
+        alert('Please enter your name to start!');
+        welcomeInput.focus();
+        return;
+      }
+      setUsername(name);
+      // Hide welcome, show game UI
+      document.getElementById('welcome-screen').classList.add('hidden');
+      document.getElementById('game-wrapper').classList.remove('hidden');
+
+      // Initialize game with username
+      if (typeof loadLevel === 'function') {
+        loadLevel();
+      }
+      // Update the score display with username (optional)
+      updateScore();
+    });
+
+    // Keyboard shortcuts only work when not typing in welcome input
+    document.addEventListener('keydown', (e) => {
+      if (document.activeElement === welcomeInput) return; // Ignore if typing name
+      if (e.key.toLowerCase() === 'a' && keyImageMap.A) {
+        keyImageMap.A.click();
+      } else if (e.key.toLowerCase() === 'b' && keyImageMap.B) {
+        keyImageMap.B.click();
+      }
+    });
+
+    // Your existing global vars from script.js
+    let keyImageMap = {};
+
+    // Dummy updateScore for initial demo if not defined in script.js
+    if (typeof updateScore !== 'function') {
+      function updateScore() {
+        const scoreBox = document.getElementById('score');
+        scoreBox.innerText = `Score: 0`;
+      }
+    }
+  </script>
+
+</body>
+</html>
